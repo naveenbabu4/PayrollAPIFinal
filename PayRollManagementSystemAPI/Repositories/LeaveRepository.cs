@@ -44,8 +44,8 @@ namespace PayRollManagementSystemAPI.Repositories
         {
             var mon = month.ToString("MMM");
 
-            var leavesCount = await _db.Leave
-                .Where(u => u.User.Id == id && u.LeaveStartDate >= mon && u.LeaveEndDate <= endDate)
+            var leaves = await _db.Leave
+                .Where(u => u.User.Id == id && u.LeaveStartDate.ToString("MMM") == mon)
                 .ToListAsync();
             return leaves;
 
