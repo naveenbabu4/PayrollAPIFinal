@@ -25,7 +25,7 @@ namespace PayRollManagementSystemAPI.Repositories
             return null;
         }
         
-
+        // Method To Create An Employee
         public async Task<AccountUser> CreateEmployee(AccountUser user)
         {
             if( _db !=null)
