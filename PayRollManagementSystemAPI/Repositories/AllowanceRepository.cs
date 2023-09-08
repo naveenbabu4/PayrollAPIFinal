@@ -1,38 +1,107 @@
-﻿using PayRollManagementSystemAPI.Contracts;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
+using System.Xml.Linq;
 
 namespace PayRollManagementSystemAPI.Repositories
 {
     public class AllowanceRepository : IAllowanceRepository
     {
-        public Task<AllowanceAndDeduction> CreateAllowance(AllowanceAndDeduction allowanceAndDeduction)
+        private readonly PayRollManagementSystemDbContext _db;
+        public AllowanceRepository(PayRollManagementSystemDbContext db)
         {
-            throw new NotImplementedException();
+            _db = db;
         }
 
-        public Task<int> DeleteAllowance(int id)
+        public async Task<AllowanceAndDeduction> CreateAllowance(AllowanceAndDeduction allowanceAndDeduction)
         {
-            throw new NotImplementedException();
+
+            // Assuming _db is your DbContext instance
+            _db.AllowanceAndDeduction.Add(allowanceAndDeduction);
+            await _db.SaveChangesAsync();
+
+            return allowanceAndDeduction;
+
+
         }
 
-        public Task<List<AllowanceAndDeduction>> GetAllAllowancesById(int id)
+
+
+        public async Task<int> DeleteAllowance(string id)
         {
-            throw new NotImplementedException();
+            var allowance = await _db.AllowanceAndDeduction.FindAsync(id);
+            if (allowance != null)
+            {
+                _db.AllowanceAndDeduction.Remove(allowance);
+                await _db.SaveChangesAsync();
+
+                return allowance.Id;
+            }
+
+            return 0;
+
+
         }
 
-        public Task<List<AllowanceAndDeduction>> GetAllAllowancesNames()
+
+
+        public async Task<List<AllowanceAndDeduction>> GetAllAllowancesById(string id)
         {
-            throw new NotImplementedException();
+            // Assuming _db is your DbContext instance
+            var allowances = await _db.AllowanceAndDeduction
+                .Where(ad => ad.User.Id == id) // Filter by user ID
+                .ToListAsync();
+
+            return allowances;
         }
 
-        public Task<List<AllowanceAndDeduction>> GetAllowancesByClassName(string className)
+
+
+        public async Task<List<AllowanceAndDeduction>> GetAllAllowancesNames()
         {
-            throw new NotImplementedException();
+            var allowances = await _db.AllowanceAndDeduction.ToListAsync();
+            return allowances;
         }
 
-        public Task<int> UpdateAllowance(AllowanceAndDeduction allowanceAndDeduction)
+        public async Task<List<AllowanceAndDeduction>> GetAllowancesByClassName(string name)
         {
-            throw new NotImplementedException();
+            var allowances = await _db.AllowanceAndDeduction
+            .Where(ad => ad.User.FullName == name)
+            .ToListAsync();
+
+            return allowances;
+
         }
+
+
+        public async Task<int> UpdateAllowance(AllowanceAndDeduction allowanceAndDeduction)
+        {
+            var existingAllowance = await _db.AllowanceAndDeduction.FindAsync(allowanceAndDeduction.Id);
+
+            if (existingAllowance == null)
+            {
+
+                return 0;
+            }
+
+            // Update the properties of the existing entity with the new values
+            existingAllowance.User = allowanceAndDeduction.User;
+            existingAllowance.AllowanceOrDeductionType = allowanceAndDeduction.AllowanceOrDeductionType;
+            existingAllowance.Amount = allowanceAndDeduction.Amount;
+
+            // Mark the entity as modified
+            _db.Entry(existingAllowance).State = EntityState.Modified;
+
+            await _db.SaveChangesAsync();
+
+            return existingAllowance.Id;
+        }
+
     }
+
+
 }
+
+
+

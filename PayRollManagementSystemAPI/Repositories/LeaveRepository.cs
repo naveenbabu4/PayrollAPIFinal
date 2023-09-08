@@ -13,70 +13,65 @@ namespace PayRollManagementSystemAPI.Repositories
         {
             _db = db;
         }
-        public async Task<Leave> Create(int id, Leave leave)
+        public async Task<Leave> Create(string id, Leave leave)
         {
-           // First, you may want to validate the input or perform any necessary checks here.
-
-            // Set the user Id for the leave object.
-            leave.Id = id;
-
-            // Add the leave object to the database context.
-            _db.Leave.Add(leave);
-
-            // Save the changes to the database.
-            await _db.SaveChangesAsync();
-
-            // Return the created leave object with any modifications or generated values.
-            return leave;
-            throw new NotImplementedException();
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user != null)
+            {
+                leave.User = user;
+                if (_db.Leave != null)
+                {
+                    await _db.Leave.AddAsync(leave);
+                    await _db.SaveChangesAsync();
+                    return leave;
+                }
+            }
+            return null;
 
         }
 
         public async Task<List<Leave>> GetAllApprovedLeaves()
         {
             return await _db.Leave.ToListAsync();
-            throw new NotImplementedException();
         }
 
-        public async Task<List<Leave>> GetAllLeavesById(int id)
+        public async Task<List<Leave>> GetAllLeavesById(string id)
         {
-            return await _db.Leave.Where(c => c.Id == id).ToListAsync();
-            throw new NotImplementedException();
+            return await _db.Leave.Where(c => c.User.Id == id).ToListAsync();
         }
 
-        public async Task<List<Leave>> GetAllLeavesByMonthById(int id, DateTime month)
+        public async Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month)
         {
             var startDate = new DateTime(month.Year, month.Month, month.Day);
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
             var leaves = await _db.Leave
-                .Where(u => u.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
+                .Where(u => u.User.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
                 .ToListAsync();
             return leaves;
 
-            throw new NotImplementedException();
         }
 
 
-        public async Task<List<Leave>> GetAllLeavesByYearById(int id, DateTime startYear, DateTime endYear)
+        public async Task<List<Leave>> GetAllLeavesByYearById(string id, DateTime startYear, DateTime endYear)
         {
             var startDate = new DateTime(startYear.Year, 1, 1); // Start of the year
             var endDate = new DateTime(endYear.Year, 12, 31);   // End of the year
 
             var leaves = await _db.Leave
-                .Where(u => u.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
+                .Where(u => u.User.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
                 .ToListAsync();
 
             return leaves;
         }
 
+
         public async Task<List<Leave>> GetAllPendingLeaves()
         {
             return await _db.Leave.ToListAsync();
-            throw new NotImplementedException();
-            
+
         }
 
-       
+
     }
 }

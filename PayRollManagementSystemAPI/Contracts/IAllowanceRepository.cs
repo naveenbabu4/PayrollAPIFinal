@@ -6,9 +6,9 @@ namespace PayRollManagementSystemAPI.Contracts
     {
         Task<AllowanceAndDeduction> CreateAllowance(AllowanceAndDeduction allowanceAndDeduction);
         Task<int> UpdateAllowance(AllowanceAndDeduction allowanceAndDeduction);
-        Task<int> DeleteAllowance(int id);
+        Task<int> DeleteAllowance(string id);
         Task<List<AllowanceAndDeduction>> GetAllAllowancesNames();
-        Task<List<AllowanceAndDeduction>> GetAllAllowancesById(int id);
+        Task<List<AllowanceAndDeduction>> GetAllAllowancesById(string id);
         Task<List<AllowanceAndDeduction>> GetAllowancesByClassName(string className);
 
     }
