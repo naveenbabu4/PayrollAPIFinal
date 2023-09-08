@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -56,11 +57,12 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllLeavesByYearById(string id, DateTime startYear, DateTime endYear)
         {
-            var startDate = new DateTime(startYear.Year, 1, 1); // Start of the year
-            var endDate = new DateTime(endYear.Year, 12, 31);   // End of the year
+            var startyear = startYear.ToString("yyyy");
+            var endyear = endYear.ToString("yyyy");
+            
 
             var leaves = await _db.Leave
-                .Where(u => u.User.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
+                .Where(u => u.User.Id == id && ((u.LeaveStartDate.ToString("yyyy") == startyear && u.LeaveEndDate.ToString("yyyy") == endyear) || (u.LeaveStartDate.ToString("yyyy") == startyear && u.LeaveEndDate.ToString("yyyy")== endyear)))
                 .ToListAsync();
 
             return leaves;
