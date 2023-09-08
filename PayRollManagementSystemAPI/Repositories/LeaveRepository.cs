@@ -19,6 +19,7 @@ namespace PayRollManagementSystemAPI.Repositories
             if (user != null)
             {
                 leave.User = user;
+                leave.TotalNoDays = leave.LeaveEndDate - leave.LeaveStartDate;
                 if (_db.Leave != null)
                 {
                     await _db.Leave.AddAsync(leave);
@@ -43,9 +44,10 @@ namespace PayRollManagementSystemAPI.Repositories
         public async Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month)
         {
             var mon = month.ToString("MMM");
+            var year = month.ToString("yyyy");
 
             var leaves = await _db.Leave
-                .Where(u => u.User.Id == id && u.LeaveStartDate.ToString("MMM") == mon)
+                .Where(u => u.User.Id == id && (u.LeaveStartDate.ToString("MMM") == mon && u.LeaveEndDate.ToString("MMM") == mon))
                 .ToListAsync();
             return leaves;
 
