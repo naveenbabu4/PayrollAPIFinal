@@ -42,11 +42,10 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month)
         {
-            var startDate = new DateTime(month.Year, month.Month, month.Day);
-            var endDate = startDate.AddMonths(1).AddDays(-1);
+            var mon = month.ToString("MMM");
 
-            var leaves = await _db.Leave
-                .Where(u => u.User.Id == id && u.LeaveStartDate >= startDate && u.LeaveEndDate <= endDate)
+            var leavesCount = await _db.Leave
+                .Where(u => u.User.Id == id && u.LeaveStartDate >= mon && u.LeaveEndDate <= endDate)
                 .ToListAsync();
             return leaves;
 
