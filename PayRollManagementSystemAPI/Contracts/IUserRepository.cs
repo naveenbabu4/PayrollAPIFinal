@@ -1,4 +1,5 @@
 ﻿using PayRollManagementSystemAPI.Models;
+using PayRollManagementSystemAPI.ViewModels;
 
 namespace PayRollManagementSystemAPI.Contracts
 {
@@ -14,5 +15,9 @@ namespace PayRollManagementSystemAPI.Contracts
         Task<List<AccountUser>> GetAllEmployees();
         Task<AccountUser> GetAdminById(string id);
         Task<AccountUser>GetEmployeeById(string id);
+
+        Task<List<SalaryViewModel>> GetSalaryById(string id);
+        Task<List<SalaryViewModel>> GetSalaryByYearById(string id, DateTime year);
+        Task<SalaryViewModel> GetSalaryByMonthById(string id, DateTime month);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
+using PayRollManagementSystemAPI.ViewModels;
 
 namespace PayRollManagementSystemAPI.Repositories
 {
@@ -129,6 +130,88 @@ namespace PayRollManagementSystemAPI.Repositories
                 _db.Users.Update(user);
                 await _db.SaveChangesAsync();
                 return user.Id;
+            }
+            return null;
+        }
+
+        // Method To Get Salary Of An Particular Employee By His Id
+        public async Task<List<SalaryViewModel>> GetSalaryById(string id)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user != null && _db != null)
+            {
+                List<SalaryViewModel> salaries = await (from u in _db.Users where u.Id == id                                                        
+                                                        select new SalaryViewModel
+                                                        {
+                                                            FirstName = u.FirstName,
+                                                            LastName = u.LastName,
+                                                            Email = u.Email,
+                                                            PhoneNumber = u.PhoneNumber,
+                                                            Month = u.Salary.Month,
+                                                            Year = u.Salary.Year,
+                                                            BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
+                                                            TotalAllowances = u.Salary.TotalAllowances,
+                                                            TotalDeductions = u.Salary.TotalDeductions,
+                                                            GrossSalary = u.Salary.GrossSalary,
+                                                            NetSalary = u.Salary.NetSalary
+
+                                                        }).ToListAsync();
+
+                return salaries;
+            }
+            return null;
+        }
+        //Method To Get Salary Of An Particular Employee By His Id By Month
+        public async Task<SalaryViewModel> GetSalaryByMonthById(string id, DateTime month)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var mon = month.ToString("MMM");
+            var year = month.ToString("yyyy");
+            if (_db != null && user != null)
+            {
+                SalaryViewModel salary = await (from u in _db.Users
+                                                      where u.Id == id && u.Salary.Month.ToString("MMM") == mon
+                                                      select new SalaryViewModel
+                                                {
+                                                    FirstName = u.FirstName,
+                                                    LastName = u.LastName,
+                                                    Email = u.Email,
+                                                    PhoneNumber = u.PhoneNumber,
+                                                    Month = u.Salary.Month,
+                                                    Year = u.Salary.Year,
+                                                    BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
+                                                    TotalAllowances = u.Salary.TotalAllowances,
+                                                    TotalDeductions = u.Salary.TotalDeductions,
+                                                    GrossSalary = u.Salary.GrossSalary,
+                                                    NetSalary = u.Salary.NetSalary
+                                                }).FirstOrDefaultAsync();
+                return salary;
+            }
+            return null;
+        }
+        //Method To Get Salary Of An Particular Employee By His Id By Year
+        public async Task<List<SalaryViewModel>> GetSalaryByYearById(string id, DateTime year)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var ye = year.ToString("yyyy");
+            if (_db != null && user != null)
+            {
+                List<SalaryViewModel> salaries = await (from u in _db.Users where u.Id == id && u.Salary.Year.ToString("YYYY") == ye                                                         
+                                                        select new SalaryViewModel
+                                                        {
+                                                            FirstName = u.FirstName,
+                                                            LastName = u.LastName,
+                                                            Email = u.Email,
+                                                            PhoneNumber = u.PhoneNumber,
+                                                            Month = u.Salary.Month,
+                                                            Year = u.Salary.Year,
+                                                            BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
+                                                            TotalAllowances = u.Salary.TotalAllowances,
+                                                            TotalDeductions = u.Salary.TotalDeductions,
+                                                            GrossSalary = u.Salary.GrossSalary,
+                                                            NetSalary = u.Salary.NetSalary
+                                                        }).ToListAsync();
+                return salaries;
             }
             return null;
         }
