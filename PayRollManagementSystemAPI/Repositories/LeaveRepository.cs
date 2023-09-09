@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
+using PayRollManagementSystemAPI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,7 @@ namespace PayRollManagementSystemAPI.Repositories
         {
             _db = db;
         }
-        public async Task<Leave> Create(string id, Leave leave)
+        public async Task<LeaveViewModel> Create(string id, LeaveViewModel leave)
         {
             var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user != null)

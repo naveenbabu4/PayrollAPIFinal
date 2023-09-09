@@ -22,7 +22,7 @@ namespace PayRollManagementSystemAPI.Repositories
             AllowanceAndDeduction allowanceAndDeduction1 = JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
             if (_db != null)
             {
-                _db.AllowanceAndDeduction.Add(allowanceAndDeduction1);
+                await _db.AllowanceAndDeduction.AddAsync(allowanceAndDeduction1);
                 await _db.SaveChangesAsync();
             }
             return allowanceAndDeduction;
