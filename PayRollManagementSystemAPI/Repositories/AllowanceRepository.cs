@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
+using PayRollManagementSystemAPI.ViewModels;
 using System.Xml.Linq;
 
 namespace PayRollManagementSystemAPI.Repositories
@@ -14,15 +16,16 @@ namespace PayRollManagementSystemAPI.Repositories
             _db = db;
         }
 
-        public async Task<AllowanceAndDeduction> CreateAllowance(AllowanceAndDeduction allowanceAndDeduction)
+        public async Task<AllowanceViewModel> CreateAllowance(AllowanceViewModel allowanceAndDeduction)
         {
-
-            // Assuming _db is your DbContext instance
-            _db.AllowanceAndDeduction.Add(allowanceAndDeduction);
-            await _db.SaveChangesAsync();
-
+            string obj = JsonConvert.SerializeObject(allowanceAndDeduction);
+            AllowanceAndDeduction allowanceAndDeduction1 = JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
+            if (_db != null)
+            {
+                _db.AllowanceAndDeduction.Add(allowanceAndDeduction1);
+                await _db.SaveChangesAsync();
+            }
             return allowanceAndDeduction;
-
 
         }
 
@@ -48,12 +51,13 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<AllowanceAndDeduction>> GetAllAllowancesById(string id)
         {
-            // Assuming _db is your DbContext instance
-            var allowances = await _db.AllowanceAndDeduction
-                .Where(ad => ad.User.Id == id) // Filter by user ID
-                .ToListAsync();
+            //// Assuming _db is your DbContext instance
+            //var allowances = await _db.AllowanceAndDeduction
+            //    .Where(ad => ad.User.Id == id) // Filter by user ID
+            //    .ToListAsync();
 
-            return allowances;
+            return null;
+            //return allowances;
         }
 
 
@@ -66,36 +70,36 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<AllowanceAndDeduction>> GetAllowancesByClassName(string name)
         {
-            var allowances = await _db.AllowanceAndDeduction
-            .Where(ad => ad.User.FullName == name)
-            .ToListAsync();
+            //var allowances = await _db.AllowanceAndDeduction
+            //.Where(ad => ad.User.FullName == name)
+            //.ToListAsync();
 
-            return allowances;
+            return  null;
 
         }
 
 
-        public async Task<int> UpdateAllowance(AllowanceAndDeduction allowanceAndDeduction)
+        public async Task<int> UpdateAllowance(AllowanceViewModel allowanceAndDeduction)
         {
-            var existingAllowance = await _db.AllowanceAndDeduction.FindAsync(allowanceAndDeduction.Id);
+            //var existingAllowance = await _db.AllowanceAndDeduction.FindAsync(allowanceAndDeduction.Id);
 
-            if (existingAllowance == null)
-            {
+            //if (existingAllowance == null)
+            //{
 
-                return 0;
-            }
+            //    return 0;
+            //}
 
-            // Update the properties of the existing entity with the new values
-            existingAllowance.User = allowanceAndDeduction.User;
-            existingAllowance.AllowanceOrDeductionType = allowanceAndDeduction.AllowanceOrDeductionType;
-            existingAllowance.Amount = allowanceAndDeduction.Amount;
+            //// Update the properties of the existing entity with the new values
+            //existingAllowance.User = allowanceAndDeduction.User;
+            //existingAllowance.AllowanceOrDeductionType = allowanceAndDeduction.AllowanceOrDeductionType;
+            //existingAllowance.Amount = allowanceAndDeduction.Amount;
 
-            // Mark the entity as modified
-            _db.Entry(existingAllowance).State = EntityState.Modified;
+            //// Mark the entity as modified
+            //_db.Entry(existingAllowance).State = EntityState.Modified;
 
-            await _db.SaveChangesAsync();
+            //await _db.SaveChangesAsync();
 
-            return existingAllowance.Id;
+            return 0;
         }
 
     }

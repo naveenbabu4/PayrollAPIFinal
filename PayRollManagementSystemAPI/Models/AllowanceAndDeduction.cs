@@ -9,10 +9,21 @@ namespace PayRollManagementSystemAPI.Models
     {
         [Key]
         public int Id { get; set; }
-        public AccountUser? User { get; set; }
-        public string? AllowanceOrDeductionType { get; set; }
-
+        public string? ClassName { get; set; }
+        [Required]
         [Column(TypeName = "decimal(18,6)")]
-        public decimal Amount { get; set; }
+        public decimal BasicSalary { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal HRAllowance { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal DAAllowance { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal TravelAllowance { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal MedicalAllowance { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal WashingAllowance { get; set; }
+        [Column(TypeName = "decimal(18,6)")]
+        public decimal LeaveDeduction { get; set; }
     }
 }

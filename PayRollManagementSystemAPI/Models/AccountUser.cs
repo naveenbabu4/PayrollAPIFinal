@@ -12,5 +12,6 @@ namespace PayRollManagementSystemAPI.Models
         public string? Address { get; set; }
         public DateTime JoiningDate { get; set; }
         public string? Position { get; set; }
+        public Salary? Salary { get; set; }
     }
 }

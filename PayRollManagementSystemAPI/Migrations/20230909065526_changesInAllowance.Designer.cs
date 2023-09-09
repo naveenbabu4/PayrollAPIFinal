@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayRollManagementSystemAPI.Models;
 
@@ -11,9 +12,10 @@ using PayRollManagementSystemAPI.Models;
 namespace PayRollManagementSystemAPI.Migrations
 {
     [DbContext(typeof(PayRollManagementSystemDbContext))]
-    partial class PayRollManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230909065526_changesInAllowance")]
+    partial class changesInAllowance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,9 +217,6 @@ namespace PayRollManagementSystemAPI.Migrations
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SalaryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -238,8 +237,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("SalaryId");
-
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -250,9 +247,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("BasicSalary")
-                        .HasColumnType("decimal(18,6)");
 
                     b.Property<string>("ClassName")
                         .HasColumnType("nvarchar(max)");
@@ -328,6 +322,9 @@ namespace PayRollManagementSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(18,6)");
+
                     b.Property<decimal>("GrossSalary")
                         .HasColumnType("decimal(18,6)");
 
@@ -343,6 +340,9 @@ namespace PayRollManagementSystemAPI.Migrations
                     b.Property<decimal>("TotalDeductions")
                         .HasColumnType("decimal(18,6)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Year")
                         .HasColumnType("datetime2");
 
@@ -350,6 +350,8 @@ namespace PayRollManagementSystemAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("allowanceAndDeductionId");
 
@@ -407,15 +409,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PayRollManagementSystemAPI.Models.AccountUser", b =>
-                {
-                    b.HasOne("PayRollManagementSystemAPI.Models.Salary", "Salary")
-                        .WithMany()
-                        .HasForeignKey("SalaryId");
-
-                    b.Navigation("Salary");
-                });
-
             modelBuilder.Entity("PayRollManagementSystemAPI.Models.Leave", b =>
                 {
                     b.HasOne("PayRollManagementSystemAPI.Models.AccountUser", "User")
@@ -427,9 +420,15 @@ namespace PayRollManagementSystemAPI.Migrations
 
             modelBuilder.Entity("PayRollManagementSystemAPI.Models.Salary", b =>
                 {
+                    b.HasOne("PayRollManagementSystemAPI.Models.AccountUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.HasOne("PayRollManagementSystemAPI.Models.AllowanceAndDeduction", "allowanceAndDeduction")
                         .WithMany()
                         .HasForeignKey("allowanceAndDeductionId");
+
+                    b.Navigation("User");
 
                     b.Navigation("allowanceAndDeduction");
                 });

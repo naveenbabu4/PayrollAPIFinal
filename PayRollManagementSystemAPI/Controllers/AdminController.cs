@@ -13,19 +13,22 @@ namespace PayRollManagementSystemAPI.Controllers
     public class AdminController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAllowanceRepository _allowanceRepository;
         private readonly UserManager<AccountUser> _userManager;
         private readonly IPasswordHasher<AccountUser> _passwordHasher;
         private readonly SignInManager<AccountUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         public AdminController(IUserRepository userRepository,UserManager<AccountUser> userManager,
             IPasswordHasher<AccountUser> passwordHasher,SignInManager<AccountUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IAllowanceRepository allowanceRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _passwordHasher = passwordHasher;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _allowanceRepository = allowanceRepository;
         }
         [HttpGet]
         public IActionResult Index()
@@ -58,12 +61,6 @@ namespace PayRollManagementSystemAPI.Controllers
             {
                 await _userManager.AddToRoleAsync(user, "employee");
                 return Json(user);
-                //return new
-                //{
-                //    token = JWTTokenGenerator(user, userModel.Role.Trim().ToLower()),
-                //    userId = user.Id,
-                //    role = userModel.Role.ToLower()
-                //};
             }
             else return null;
         }
@@ -96,12 +93,6 @@ namespace PayRollManagementSystemAPI.Controllers
             {
                 await _userManager.AddToRoleAsync(user, "admin");
                 return Json(user);
-                //return new
-                //{
-                //    token = JWTTokenGenerator(user, userModel.Role.Trim().ToLower()),
-                //    userId = user.Id,
-                //    role = userModel.Role.ToLower()
-                //};
             }
             else return null;
         }
@@ -125,6 +116,12 @@ namespace PayRollManagementSystemAPI.Controllers
                 return Json(user);
             }
 
+        }
+        [HttpPost]
+        [Route("AddClass")]
+        public async Task<ActionResult> AddClass(AllowanceViewModel allowanceViewModel)
+        {
+            return Json(await _allowanceRepository.CreateAllowance(allowanceViewModel));
         }
     }
 }
