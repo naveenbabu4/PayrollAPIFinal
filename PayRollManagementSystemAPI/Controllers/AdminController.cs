@@ -15,6 +15,7 @@ namespace PayRollManagementSystemAPI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IAllowanceRepository _allowanceRepository;
         private readonly ISalaryRepository _salaryRepository;
+        private readonly ILeaveRepository _leaveRepository;
         private readonly UserManager<AccountUser> _userManager;
         private readonly IPasswordHasher<AccountUser> _passwordHasher;
         private readonly SignInManager<AccountUser> _signInManager;
@@ -22,7 +23,7 @@ namespace PayRollManagementSystemAPI.Controllers
         public AdminController(IUserRepository userRepository,UserManager<AccountUser> userManager,
             IPasswordHasher<AccountUser> passwordHasher,SignInManager<AccountUser> signInManager,
             RoleManager<IdentityRole> roleManager,IAllowanceRepository allowanceRepository,
-            ISalaryRepository salaryRepository)
+            ISalaryRepository salaryRepository,ILeaveRepository leaveRepository )
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -31,6 +32,7 @@ namespace PayRollManagementSystemAPI.Controllers
             _roleManager = roleManager;
             _allowanceRepository = allowanceRepository;
             _salaryRepository = salaryRepository;
+            _leaveRepository = leaveRepository;
         }
         [HttpGet]
         public IActionResult Index()
@@ -138,6 +140,35 @@ namespace PayRollManagementSystemAPI.Controllers
                 return Json(await _salaryRepository.CreateSalary(userId,salaryViewModel));
             else
                 return BadRequest();
+        }
+        [HttpGet]
+        [Route("GetAllPendingLeaves")]
+        public async Task<IActionResult> GetAllPendingLeaves()
+        {
+            List<Leave> leaves = await _leaveRepository.GetAllPendingLeaves();
+            return Json(leaves);
+        }
+        [HttpPost]
+        [Route("ApproveLeave")]
+        public async Task<IActionResult> ApproveLeave(LeaveViewModel leave)
+        {
+            if(leave != null)
+            {
+                leave.LeaveStatus = "approved";
+                return Json(await _leaveRepository.UpdateLeaveStatus(leave));
+            }
+            return null;
+        }
+        [HttpPost]
+        [Route("RejectLeave")]
+        public async Task<IActionResult> RejectLeave(LeaveViewModel leave)
+        {
+            if (leave != null)
+            {
+                leave.LeaveStatus = "rejected";
+                return Json(await _leaveRepository.UpdateLeaveStatus(leave));
+            }
+            return null;
         }
     }
 }

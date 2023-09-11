@@ -93,6 +93,7 @@ namespace PayRollManagementSystemAPI.Repositories
             if(upLeave != null)
             {
                 upLeave.LeaveStatus = leave.LeaveStatus;
+                upLeave.Comments = leave.Comments;
                 _db.Leave.Update(upLeave);
                 await _db.SaveChangesAsync();
                 return upLeave;
