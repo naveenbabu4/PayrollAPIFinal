@@ -12,6 +12,6 @@ namespace PayRollManagementSystemAPI.Contracts
         Task<List<Leave>> GetAllPendingLeaves();
         Task<List<Leave>> GetAllApprovedLeaves();
         Task<List<Leave>> GetAllRejectedLeaves();
-        Task<Leave> UpdateLeaveStatus(string id,Leave leave);
+        Task<Leave> UpdateLeaveStatus(LeaveViewModel leave);
     }
 }
