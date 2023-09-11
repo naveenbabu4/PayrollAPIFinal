@@ -11,5 +11,6 @@ namespace PayRollManagementSystemAPI.Contracts
         Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month);
         Task<List<Leave>> GetAllPendingLeaves();
         Task<List<Leave>> GetAllApprovedLeaves();
+        Task<List<Leave>> GetAllRejectedLeaves();
     }
 }

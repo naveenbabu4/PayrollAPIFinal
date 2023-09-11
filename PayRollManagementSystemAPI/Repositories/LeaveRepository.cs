@@ -24,6 +24,7 @@ namespace PayRollManagementSystemAPI.Repositories
             if (user != null)
             {
                 leave1.User = user;
+                leave1.LeaveStatus = "pending";
                 TimeSpan NoOfDays = leave1.LeaveEndDate - leave1.LeaveStartDate;
                 leave1.TotalNoOfDays = (int) NoOfDays.TotalDays;
                 if (_db.Leave != null)
@@ -39,7 +40,7 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllApprovedLeaves()
         {
-            return await _db.Leave.ToListAsync();
+            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "approved").ToListAsync();
         }
 
         public async Task<List<Leave>> GetAllLeavesById(string id)
@@ -49,11 +50,12 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month)
         {
-            var mon = month.ToString("MMM");
-            var year = month.ToString("yyyy");
+            var mon = month.Month;
+            var year = month.Year;
 
-            var leaves = await _db.Leave
-                .Where(u => u.User.Id == id && (u.LeaveStartDate.ToString("MMM") == mon && u.LeaveEndDate.ToString("MMM") == mon))
+            List<Leave> leaves = await _db.Leave
+                .Where(u => u.User.Id == id && (u.LeaveStartDate.Month == mon && u.LeaveEndDate.Month == mon) 
+                && (u.LeaveStartDate.Year == year && u.LeaveEndDate.Year == year))
                 .ToListAsync();
             return leaves;
 
@@ -62,12 +64,12 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllLeavesByYearById(string id, DateTime startYear, DateTime endYear)
         {
-            var startyear = startYear.ToString("yyyy");
-            var endyear = endYear.ToString("yyyy");
+            var startyear = startYear.Year;
+            var endyear = endYear.Year;
             
 
-            var leaves = await _db.Leave
-                .Where(u => u.User.Id == id && ((u.LeaveStartDate.ToString("yyyy") == startyear && u.LeaveEndDate.ToString("yyyy") == endyear) || (u.LeaveStartDate.ToString("yyyy") == startyear && u.LeaveEndDate.ToString("yyyy")== endyear)))
+            List<Leave> leaves = await _db.Leave
+                .Where(u => u.User.Id == id && ((u.LeaveStartDate.Year >= startyear  && u.LeaveEndDate.Year <= endyear)))
                 .ToListAsync();
 
             return leaves;
@@ -76,10 +78,14 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<List<Leave>> GetAllPendingLeaves()
         {
-            return await _db.Leave.ToListAsync();
+            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "pending").ToListAsync();
 
         }
+        public async Task<List<Leave>> GetAllRejectedLeaves()
+        {
+            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "rejected").ToListAsync();
 
+        }
 
     }
 }

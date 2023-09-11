@@ -26,6 +26,36 @@ namespace PayRollManagementSystemAPI.Controllers
                 return Json(await _leaveRepository.Create(id, leaveViewModel));
             }
             return null;
+        
+        }
+        [HttpGet]
+        [Route("GetAllLeavesById")]
+        public async Task<IActionResult> LeaveReport(string id) {
+            if (id != null)
+            {
+                return Json(await _leaveRepository.GetAllLeavesById(id));
+            }
+            return null;
+        }
+        [HttpGet]
+        [Route("GetAllLeavesByMonthById")]
+        public async Task<IActionResult> LeaveReportByMonth(string id,DateTime date)
+        {
+            if (id != null)
+            {
+                return Json(await _leaveRepository.GetAllLeavesByMonthById(id,date));
+            }
+            return null;
+        }
+        [HttpGet]
+        [Route("GetAllLeavesByYearById")]
+        public async Task<IActionResult> LeaveReportByYear(string id, DateTime startYear,DateTime endYear)
+        {
+            if (id != null)
+            {
+                return Json(await _leaveRepository.GetAllLeavesByYearById(id, startYear,endYear));
+            }
+            return null;
         }
     }
 }
