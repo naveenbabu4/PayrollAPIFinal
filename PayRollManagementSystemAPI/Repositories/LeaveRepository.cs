@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
 using PayRollManagementSystemAPI.ViewModels;
@@ -18,13 +19,16 @@ namespace PayRollManagementSystemAPI.Repositories
         public async Task<LeaveViewModel> Create(string id, LeaveViewModel leave)
         {
             var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            string obj = JsonConvert.SerializeObject(leave);
+            Leave leave1 = JsonConvert.DeserializeObject<Leave>(obj);
             if (user != null)
             {
-                leave.User = user;
-                leave.TotalNoDays = leave.LeaveEndDate - leave.LeaveStartDate;
+                leave1.User = user;
+                TimeSpan NoOfDays = leave1.LeaveEndDate - leave1.LeaveStartDate;
+                leave1.TotalNoOfDays = (int) NoOfDays.TotalDays;
                 if (_db.Leave != null)
                 {
-                    await _db.Leave.AddAsync(leave);
+                    await _db.Leave.AddAsync(leave1);
                     await _db.SaveChangesAsync();
                     return leave;
                 }

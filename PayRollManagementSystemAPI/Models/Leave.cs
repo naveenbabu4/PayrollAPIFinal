@@ -11,7 +11,7 @@ namespace PayRollManagementSystemAPI.Models
         public string? LeaveType { get; set; }
         public DateTime LeaveStartDate { get; set; }
         public DateTime LeaveEndDate { get; set; }
-        public TimeSpan TotalNoDays { get; set; }
+        public int TotalNoOfDays { get; set; }  
         public string? LeaveStatus { get; set; }
         public string? Reason { get; set; }
         public string? Comments { get; set; }

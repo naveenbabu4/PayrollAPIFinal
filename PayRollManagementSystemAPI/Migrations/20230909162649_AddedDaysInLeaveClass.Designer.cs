@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayRollManagementSystemAPI.Models;
 
@@ -11,9 +12,10 @@ using PayRollManagementSystemAPI.Models;
 namespace PayRollManagementSystemAPI.Migrations
 {
     [DbContext(typeof(PayRollManagementSystemDbContext))]
-    partial class PayRollManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230909162649_AddedDaysInLeaveClass")]
+    partial class AddedDaysInLeaveClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,6 +308,9 @@ namespace PayRollManagementSystemAPI.Migrations
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("TotalNoDays")
+                        .HasColumnType("time");
 
                     b.Property<int>("TotalNoOfDays")
                         .HasColumnType("int");
