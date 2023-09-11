@@ -5,7 +5,8 @@ namespace PayRollManagementSystemAPI.Contracts
 {
     public interface ISalaryRepository
     {
-        Task<Salary> CreateSalary(string id, SalaryViewModel salary);        
+        Task<Salary> CreateSalary(string id, SalaryViewModel salary); 
+        Task<SalaryViewModel> GenerateSalary(string id, SalaryViewModel salary);
 
     }
 }
