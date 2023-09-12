@@ -6,6 +6,7 @@ using PayRollManagementSystemAPI.ViewModels;
 
 namespace PayRollManagementSystemAPI.Controllers
 {
+    [Route("LoginController/")]
     public class LoginController : Controller
     {
         private readonly UserManager<AccountUser> _userManager;
@@ -22,6 +23,7 @@ namespace PayRollManagementSystemAPI.Controllers
             _roleManager = roleManager;
         }
         [HttpGet]
+        [Route("check")]
         public IActionResult Index()
         {
             return Json("Working");
@@ -29,7 +31,7 @@ namespace PayRollManagementSystemAPI.Controllers
         [HttpPost]
         [Route("LoginUser")]
         //Login user function to login the user
-        public async Task<IActionResult> LoginUser(LoginViewModel loginModel)
+        public async Task<IActionResult> LoginUser([FromBody] LoginViewModel loginModel)
         {
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
 
@@ -43,6 +45,7 @@ namespace PayRollManagementSystemAPI.Controllers
 
             else
             {
+                var roles = await _userManager.GetRolesAsync(user);
                 return Json(user);
             }
 

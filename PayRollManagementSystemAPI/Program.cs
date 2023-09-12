@@ -23,7 +23,15 @@ builder.Services.AddTransient<IUserRepository,UserRepository>();
 builder.Services.AddTransient<IAllowanceRepository,AllowanceRepository>();
 builder.Services.AddTransient<ILeaveRepository, LeaveRepository>();
 builder.Services.AddTransient<ISalaryRepository, SalaryRepository>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            );
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(policyName: "CorsPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
