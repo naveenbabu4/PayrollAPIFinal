@@ -5,7 +5,7 @@ namespace PayRollManagementSystemAPI.Contracts
 {
     public interface IAllowanceRepository
     {
-        Task<AllowanceViewModel> CreateAllowance(AllowanceViewModel allowanceAndDeduction);
+        Task<AllowanceAndDeduction> CreateAllowance(AllowanceViewModel allowanceAndDeduction);
         Task<int> UpdateAllowance(AllowanceViewModel allowanceAndDeduction);
         Task<int> DeleteAllowance(string id);
         Task<List<AllowanceAndDeduction>> GetAllAllowancesNames();

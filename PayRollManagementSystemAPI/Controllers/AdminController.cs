@@ -61,6 +61,7 @@ namespace PayRollManagementSystemAPI.Controllers
             AccountUser user = new AccountUser();
             user = JsonConvert.DeserializeObject<AccountUser>(obj);
             user.UserName = employee.Email.Split('@')[0];
+            user.FullName = employee.FirstName +" "+ employee.LastName;
             var result = await _userManager.CreateAsync(user, employee.Password);
             if (result.Succeeded)
             {

@@ -16,7 +16,7 @@ namespace PayRollManagementSystemAPI.Repositories
             _db = db;
         }
 
-        public async Task<AllowanceViewModel> CreateAllowance(AllowanceViewModel allowanceAndDeduction)
+        public async Task<AllowanceAndDeduction> CreateAllowance(AllowanceViewModel allowanceAndDeduction)
         {
             string obj = JsonConvert.SerializeObject(allowanceAndDeduction);
             AllowanceAndDeduction allowanceAndDeduction1 = JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
@@ -25,7 +25,7 @@ namespace PayRollManagementSystemAPI.Repositories
                 await _db.AllowanceAndDeduction.AddAsync(allowanceAndDeduction1);
                 await _db.SaveChangesAsync();
             }
-            return allowanceAndDeduction;
+            return allowanceAndDeduction1;
 
         }
 
