@@ -58,29 +58,32 @@ namespace PayRollManagementSystemAPI.Repositories
             string obj = JsonConvert.SerializeObject(salary);
             Salary salaryObj = JsonConvert.DeserializeObject<Salary>(obj);
             salaryObj.allowanceAndDeduction = JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
-            AccountUser user = JsonConvert.DeserializeObject<AccountUser>(obj);
+            //AccountUser user = JsonConvert.DeserializeObject<AccountUser>(obj);
+            AccountUser user = await _db.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
             //Getting allowances and deduction based on particular class(A4,A5) from AllowanceAndDeduction table
             //AllowanceAndDeduction allowDed = await _db.AllowanceAndDeduction.FirstOrDefaultAsync(x => x.ClassName == salaryObj.allowanceAndDeduction.ClassName);
             //Getting Salary by salary id
-            Salary sal = await _db.Salary.FirstOrDefaultAsync(x => x.Id == salary.SalaryId);
+            Salary sal = await _db.Salary.Include(x=> x.allowanceAndDeduction).FirstOrDefaultAsync(x => x.Id == salary.SalaryId);
+            sal.allowanceAndDeduction.DAAllowance = salaryObj.allowanceAndDeduction.DAAllowance;
+            sal.allowanceAndDeduction.HRAllowance = salaryObj.allowanceAndDeduction.HRAllowance;
             //Getting if any Leaves are there in particular month for that employee
-            List<Leave> noOfLeaves = await _leaveRepository.GetAllLeavesByMonthById(id, salaryObj.Month);
+            List<Leave> noOfLeaves = await _leaveRepository.GetAllLeavesByMonthById(id, sal.Month);
             if (sal != null && _db != null)
             {
 
                 //Adding allowances of an employee to TotalAllowances attribute of Salary Table
                 sal.TotalAllowances = (sal.allowanceAndDeduction.BasicSalary * (salaryObj.allowanceAndDeduction.DAAllowance/100)) + (sal.allowanceAndDeduction.BasicSalary * (salaryObj.allowanceAndDeduction.HRAllowance / 100)) + sal.allowanceAndDeduction.WashingAllowance + sal.allowanceAndDeduction.MedicalAllowance + sal.allowanceAndDeduction.TravelAllowance;
-                sal.GrossSalary = sal.allowanceAndDeduction.BasicSalary + salaryObj.TotalAllowances;
+                sal.GrossSalary = sal.allowanceAndDeduction.BasicSalary + sal.TotalAllowances;
                 sal.TotalDeductions = (sal.allowanceAndDeduction.BasicSalary * (decimal)0.12) + 200;//where 200 is PROFESSION TAX which is standard and pf is 12% of Basic Salary 
                 //salary.allowanceAndDeduction = allowDed;
                 if (noOfLeaves.Count() > 0 || noOfLeaves == null)
                 {
-                    var perEachDay = (salaryObj.GrossSalary / 30); // price to deduct for paid leaves for each day
+                    var perEachDay = (sal.GrossSalary / 30); // price to deduct for paid leaves for each day
                     var totalLeaveDeduction = noOfLeaves.Count() * perEachDay;
                     sal.TotalDeductions += totalLeaveDeduction;
                 }
-                sal.NetSalary = salaryObj.GrossSalary - salaryObj.TotalDeductions;
-                await _db.Salary.AddAsync(sal);
+                sal.NetSalary = sal.GrossSalary - sal.TotalDeductions;
+                _db.Salary.Update(sal);
                 await _db.SaveChangesAsync();
                 string obj1 = JsonConvert.SerializeObject(user);
                 SalaryViewModel viewModel = JsonConvert.DeserializeObject<SalaryViewModel>(obj1);

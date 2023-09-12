@@ -16,7 +16,7 @@ namespace PayRollManagementSystemAPI.Repositories
         {
             _db = db;
         }
-        public async Task<LeaveViewModel> Create(string id, LeaveViewModel leave)
+        public async Task<Leave> Create(string id, LeaveViewModel leave)
         {
             var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
             string obj = JsonConvert.SerializeObject(leave);
@@ -25,13 +25,13 @@ namespace PayRollManagementSystemAPI.Repositories
             {
                 leave1.User = user;
                 leave1.LeaveStatus = "pending";
-                TimeSpan NoOfDays = leave1.LeaveEndDate - leave1.LeaveStartDate;
+                TimeSpan NoOfDays = leave1.LeaveEndDate.AddDays(1) - leave1.LeaveStartDate;
                 leave1.TotalNoOfDays = (int) NoOfDays.TotalDays;
                 if (_db.Leave != null)
                 {
                     await _db.Leave.AddAsync(leave1);
                     await _db.SaveChangesAsync();
-                    return leave;
+                    return leave1;
                 }
             }
             return null;
@@ -55,7 +55,7 @@ namespace PayRollManagementSystemAPI.Repositories
 
             List<Leave> leaves = await _db.Leave
                 .Where(u => u.User.Id == id && (u.LeaveStartDate.Month == mon && u.LeaveEndDate.Month == mon) 
-                && (u.LeaveStartDate.Year == year && u.LeaveEndDate.Year == year))
+                && (u.LeaveStartDate.Year == year && u.LeaveEndDate.Year == year) && u.LeaveStatus.ToLower() == "approved")
                 .ToListAsync();
             return leaves;
 

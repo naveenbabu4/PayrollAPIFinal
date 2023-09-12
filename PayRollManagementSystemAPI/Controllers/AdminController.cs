@@ -102,27 +102,7 @@ namespace PayRollManagementSystemAPI.Controllers
             }
             else return null;
         }
-        [HttpPost]
-        [Route("LoginUser")]
-        //Login user function to login the user
-        public async Task<IActionResult> LoginUser(LoginViewModel loginModel)
-        {
-            var user = await _userManager.FindByEmailAsync(loginModel.Email);
-
-            var result = await _userManager.CheckPasswordAsync(user, loginModel.Password);
-
-            if (user == null || !result)
-            {
-
-                return null;
-            }
-
-            else
-            {
-                return Json(user);
-            }
-
-        }
+        
         //Add Class method is used to call when admin is creating a new class
         [HttpPost]
         [Route("AddClass")]
@@ -170,5 +150,16 @@ namespace PayRollManagementSystemAPI.Controllers
             }
             return null;
         }
+        [HttpPost]
+        [Route("GenerateSalary")]
+        public async Task<IActionResult> GenerateSalary(string id,SalaryViewModel salaryViewModel)
+        {
+            if(id!=null && salaryViewModel != null)
+            {
+                return Json(await _salaryRepository.GenerateSalary(id,salaryViewModel));
+            }
+            return BadRequest();
+        }
+
     }
 }
