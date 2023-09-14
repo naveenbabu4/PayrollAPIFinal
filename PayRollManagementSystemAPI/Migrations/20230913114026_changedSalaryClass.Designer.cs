@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayRollManagementSystemAPI.Models;
 
@@ -11,9 +12,10 @@ using PayRollManagementSystemAPI.Models;
 namespace PayRollManagementSystemAPI.Migrations
 {
     [DbContext(typeof(PayRollManagementSystemDbContext))]
-    partial class PayRollManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230913114026_changedSalaryClass")]
+    partial class changedSalaryClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,9 +205,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("PackageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -237,8 +236,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("PackageId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -410,15 +407,6 @@ namespace PayRollManagementSystemAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PayRollManagementSystemAPI.Models.AccountUser", b =>
-                {
-                    b.HasOne("PayRollManagementSystemAPI.Models.AllowanceAndDeduction", "Package")
-                        .WithMany()
-                        .HasForeignKey("PackageId");
-
-                    b.Navigation("Package");
                 });
 
             modelBuilder.Entity("PayRollManagementSystemAPI.Models.Leave", b =>

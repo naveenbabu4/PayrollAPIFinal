@@ -49,23 +49,18 @@ namespace PayRollManagementSystemAPI.Repositories
 
 
 
-        public async Task<List<AllowanceAndDeduction>> GetAllAllowancesById(string id)
+        public async Task<AllowanceAndDeduction> GetAllowancesById(int id)
         {
-            //// Assuming _db is your DbContext instance
-            //var allowances = await _db.AllowanceAndDeduction
-            //    .Where(ad => ad.User.Id == id) // Filter by user ID
-            //    .ToListAsync();
-
-            return null;
-            //return allowances;
+            AllowanceAndDeduction allowDed = await _db.AllowanceAndDeduction.FirstOrDefaultAsync(x => x.Id == id);
+            return allowDed;            
         }
 
 
 
-        public async Task<List<AllowanceAndDeduction>> GetAllAllowancesNames()
+        public async Task<List<AllowanceAndDeduction>> GetAllAllowances()
         {
-            var allowances = await _db.AllowanceAndDeduction.ToListAsync();
-            return allowances;
+            List<AllowanceAndDeduction> allowancesAndDed = await _db.AllowanceAndDeduction.ToListAsync();
+            return allowancesAndDed;
         }
 
         public async Task<List<AllowanceAndDeduction>> GetAllowancesByClassName(string name)
@@ -81,24 +76,26 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<int> UpdateAllowance(AllowanceViewModel allowanceAndDeduction)
         {
-            //var existingAllowance = await _db.AllowanceAndDeduction.FindAsync(allowanceAndDeduction.Id);
-
-            //if (existingAllowance == null)
-            //{
-
-            //    return 0;
-            //}
-
-            //// Update the properties of the existing entity with the new values
-            //existingAllowance.User = allowanceAndDeduction.User;
-            //existingAllowance.AllowanceOrDeductionType = allowanceAndDeduction.AllowanceOrDeductionType;
-            //existingAllowance.Amount = allowanceAndDeduction.Amount;
-
-            //// Mark the entity as modified
-            //_db.Entry(existingAllowance).State = EntityState.Modified;
-
-            //await _db.SaveChangesAsync();
-
+           // string obj = JsonConvert.SerializeObject(allowanceAndDeduction);
+            //AllowanceAndDeduction allowanceAnd= JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
+            AllowanceAndDeduction allow = await _db.AllowanceAndDeduction.FirstOrDefaultAsync(x => x.Id == allowanceAndDeduction.Id);
+            //    salaryObj.allowanceAndDeduction = JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
+            if (allow != null)
+            {
+                string obj = JsonConvert.SerializeObject(allowanceAndDeduction);
+                AllowanceAndDeduction allowanceAnd= JsonConvert.DeserializeObject<AllowanceAndDeduction>(obj);
+                allow.DAAllowance = allowanceAnd.DAAllowance;
+                allow.TravelAllowance =allowanceAnd.TravelAllowance;
+                allow.HRAllowance = allowanceAnd.HRAllowance;
+                allow.BasicSalary = allowanceAnd.BasicSalary;
+                allow.MedicalAllowance = allowanceAnd.MedicalAllowance;
+                allow.ClassName = allowanceAnd.ClassName;
+                allow.LeaveDeduction = allowanceAnd.LeaveDeduction;
+                allow.WashingAllowance= allowanceAnd.WashingAllowance;
+                _db.AllowanceAndDeduction.Update(allow);
+                await _db.SaveChangesAsync();
+                return allowanceAnd.Id;
+            }
             return 0;
         }
 

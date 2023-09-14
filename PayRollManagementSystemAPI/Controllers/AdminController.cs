@@ -42,24 +42,25 @@ namespace PayRollManagementSystemAPI.Controllers
         //Inserting Employee into the database
         [HttpPost]
         [Route("CreateEmployee")] 
-        public async Task<JsonResult> CreateEmployee(UserViewModel employee,SalaryViewModel salaryViewModel)
+        public async Task<JsonResult> CreateEmployee([FromBody] UserViewModel employee,int id)
         {
             if (!await _roleManager.RoleExistsAsync("employee"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("employee"));
-                return Json(await CreateEmployeeFunc(employee,salaryViewModel));
+                return Json(await CreateEmployeeFunc(employee,id));
             }
             else
             {
-                return Json(await CreateEmployeeFunc(employee, salaryViewModel));
+                return Json(await CreateEmployeeFunc(employee, id));
             }
         }
         //Inserting Employee Function which will be triggered when CreateEmployee Called
-        private async Task<IActionResult> CreateEmployeeFunc(UserViewModel employee,SalaryViewModel salaryViewModel)
+        private async Task<IActionResult> CreateEmployeeFunc(UserViewModel employee,int id)
         {
             string obj = JsonConvert.SerializeObject(employee);
             AccountUser user = new AccountUser();
             user = JsonConvert.DeserializeObject<AccountUser>(obj);
+            user.Package = await _allowanceRepository.GetAllowancesById(id);
             user.UserName = employee.Email.Split('@')[0];
             user.FullName = employee.FirstName +" "+ employee.LastName;
             var result = await _userManager.CreateAsync(user, employee.Password);
@@ -67,14 +68,14 @@ namespace PayRollManagementSystemAPI.Controllers
             {
                 await _userManager.AddToRoleAsync(user, "employee");
                 user = await _userManager.FindByEmailAsync(user.Email);
-                return Json(user,await CreateSalary(user.Id,salaryViewModel));
+                return Json(user);
             }
             else return null;
         }
         //Inserting Admin into the database
         [HttpPost]
         [Route("CreateAdmin")]
-        public async Task<IActionResult> CreateAdmin(UserViewModel admin) 
+        public async Task<IActionResult> CreateAdmin([FromBody] AdminViewModel admin) 
         {
 
             if (!await _roleManager.RoleExistsAsync("admin"))
@@ -89,7 +90,7 @@ namespace PayRollManagementSystemAPI.Controllers
 
         }
         //Inserting Admin Function which will be triggered when CreateEmployee Called
-        private async Task<IActionResult> CreateAdminFunc(UserViewModel admin)
+        private async Task<IActionResult> CreateAdminFunc(AdminViewModel admin)
         {
             string obj = JsonConvert.SerializeObject(admin);
             AccountUser user = new AccountUser();
@@ -107,20 +108,24 @@ namespace PayRollManagementSystemAPI.Controllers
         //Add Class method is used to call when admin is creating a new class
         [HttpPost]
         [Route("AddClass")]
-        public async Task<IActionResult> AddClass(AllowanceViewModel allowanceViewModel)
+        public async Task<IActionResult> AddClass([FromBody] AllowanceViewModel allowanceViewModel)
         {
             if (allowanceViewModel != null)
                 return Json(await _allowanceRepository.CreateAllowance(allowanceViewModel));
             else
                 return BadRequest();
         }
-        //Create salary method is used for create a salary for particular employee
-        private async Task<IActionResult> CreateSalary(string userId,SalaryViewModel salaryViewModel)
+
+        // update class Method used when admin to update allowance and deduction
+        [HttpPost]
+        [Route("UpdateClass")]
+        public async Task<IActionResult> UpdateClass([FromBody] AllowanceViewModel allowanceViewModel)
         {
-            if (salaryViewModel != null)
-                return Json(await _salaryRepository.CreateSalary(userId,salaryViewModel));
-            else
-                return BadRequest();
+            if (allowanceViewModel != null)
+            {
+                return Json(await _allowanceRepository.UpdateAllowance(allowanceViewModel));
+            }
+            return BadRequest();
         }
         [HttpGet]
         [Route("GetAllPendingLeaves")]
@@ -153,11 +158,60 @@ namespace PayRollManagementSystemAPI.Controllers
         }
         [HttpPost]
         [Route("GenerateSalary")]
-        public async Task<IActionResult> GenerateSalary(string id,SalaryViewModel salaryViewModel)
+        public async Task<IActionResult> GenerateSalary(string id,DateTime month)
         {
-            if(id!=null && salaryViewModel != null)
+            if(id!=null)
             {
-                return Json(await _salaryRepository.GenerateSalary(id,salaryViewModel));
+                return Json(await _salaryRepository.GenerateSalary(id,month));
+            }
+            return BadRequest();
+        }
+        //Method to retrive all allowance and deductions
+        [HttpGet]
+        [Route("GetAllAllowances")]
+        public async Task<IActionResult> GetAllAllowances()
+        {
+            List<AllowanceAndDeduction> allowDed = await _allowanceRepository.GetAllAllowances();
+            return Json(allowDed);
+        }
+        [HttpGet]
+        [Route("GetAllEmployees")]
+        public async Task<IActionResult> GetAllEmployees()
+        {
+            List<AccountUser> employees = await _userRepository.GetAllEmployees();
+            List<UserViewModel> employeeViewModels = new List<UserViewModel>();
+            foreach (AccountUser user in employees)
+            {
+                string obj = JsonConvert.SerializeObject(user);
+                UserViewModel userViewModel = JsonConvert.DeserializeObject<UserViewModel>(obj);
+                employeeViewModels.Add(userViewModel);
+            }
+            return Json(employeeViewModels);
+        }
+        [HttpGet]
+        [Route("GetAllAdmins")]
+        public async Task<IActionResult> GetAllAdmins()
+        {
+            List<AccountUser> admins = await _userRepository.GetAllAdmins();
+            List<UserViewModel> adminViewModels = new List<UserViewModel>();
+            foreach (AccountUser user in admins)
+            {
+                string obj = JsonConvert.SerializeObject(user);
+                UserViewModel userViewModel = JsonConvert.DeserializeObject<UserViewModel>(obj);
+                adminViewModels.Add(userViewModel);
+            }
+            return Json(adminViewModels);
+        }
+        [HttpGet]
+        [Route("GetAdminById/{id}")]
+        public async Task<IActionResult> GetAdminById(string id)
+        {
+            if (id != null)
+            {
+                AccountUser user = await _userRepository.GetAdminById(id);
+                string obj = JsonConvert.SerializeObject(user);
+                UserViewModel userViewModel = JsonConvert.DeserializeObject<UserViewModel>(obj);
+                return Json(userViewModel);
             }
             return BadRequest();
         }

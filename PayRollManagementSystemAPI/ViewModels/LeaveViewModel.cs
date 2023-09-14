@@ -5,7 +5,8 @@ namespace PayRollManagementSystemAPI.ViewModels
 {
     public class LeaveViewModel
     {
-        public int LeaveId { get; set; }
+        public string? UserId { get; set; }
+        public int Id { get; set; }
         public string? LeaveType { get; set; }
         public DateTime LeaveStartDate { get; set; }
         public DateTime LeaveEndDate { get; set; }

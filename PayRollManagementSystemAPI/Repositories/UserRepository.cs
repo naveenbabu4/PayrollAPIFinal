@@ -140,20 +140,21 @@ namespace PayRollManagementSystemAPI.Repositories
             var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user != null && _db != null)
             {
-                List<SalaryViewModel> salaries = await (from u in _db.Users where u.Id == id                                                        
+                List<SalaryViewModel> salaries = await (/*from u in _db.Users where u.Id == id */
+                                                        from s in _db.Salary where s.User.Id == id
                                                         select new SalaryViewModel
                                                         {
-                                                            FirstName = u.FirstName,
-                                                            LastName = u.LastName,
-                                                            Email = u.Email,
-                                                            PhoneNumber = u.PhoneNumber,
-                                                            Month = u.Salary.Month,
-                                                            Year = u.Salary.Year,
-                                                            BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
-                                                            TotalAllowances = u.Salary.TotalAllowances,
-                                                            TotalDeductions = u.Salary.TotalDeductions,
-                                                            GrossSalary = u.Salary.GrossSalary,
-                                                            NetSalary = u.Salary.NetSalary
+                                                            FirstName = user.FirstName,
+                                                            LastName = user.LastName,
+                                                            Email = user.Email,
+                                                            PhoneNumber = user.PhoneNumber,
+                                                            Month = s.Month,
+                                                            Year =s.Year,
+                                                            BasicSalary = s.allowanceAndDeduction.BasicSalary,
+                                                            TotalAllowances = s.TotalAllowances,
+                                                            TotalDeductions = s.TotalDeductions,
+                                                            GrossSalary = s.GrossSalary,
+                                                            NetSalary = s.NetSalary
 
                                                         }).ToListAsync();
 
@@ -169,21 +170,21 @@ namespace PayRollManagementSystemAPI.Repositories
             var year = month.ToString("yyyy");
             if (_db != null && user != null)
             {
-                SalaryViewModel salary = await (from u in _db.Users
-                                                      where u.Id == id && u.Salary.Month.ToString("MMM") == mon
+                SalaryViewModel salary = await (from s in _db.Salary
+                                                      where s.User.Id == id && s.Month.ToString("MMM") == mon
                                                       select new SalaryViewModel
                                                 {
-                                                    FirstName = u.FirstName,
-                                                    LastName = u.LastName,
-                                                    Email = u.Email,
-                                                    PhoneNumber = u.PhoneNumber,
-                                                    Month = u.Salary.Month,
-                                                    Year = u.Salary.Year,
-                                                    BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
-                                                    TotalAllowances = u.Salary.TotalAllowances,
-                                                    TotalDeductions = u.Salary.TotalDeductions,
-                                                    GrossSalary = u.Salary.GrossSalary,
-                                                    NetSalary = u.Salary.NetSalary
+                                                    FirstName = user.FirstName,
+                                                    LastName = user.LastName,
+                                                    Email = user.Email,
+                                                    PhoneNumber = user.PhoneNumber,
+                                                    Month = s.Month,
+                                                    Year = s.Year,
+                                                    BasicSalary = s.allowanceAndDeduction.BasicSalary,
+                                                    TotalAllowances = s.TotalAllowances,
+                                                    TotalDeductions = s.TotalDeductions,
+                                                    GrossSalary = s.GrossSalary,
+                                                    NetSalary = s.NetSalary
                                                 }).FirstOrDefaultAsync();
                 return salary;
             }
@@ -196,20 +197,20 @@ namespace PayRollManagementSystemAPI.Repositories
             var ye = year.ToString("yyyy");
             if (_db != null && user != null)
             {
-                List<SalaryViewModel> salaries = await (from u in _db.Users where u.Id == id && u.Salary.Year.ToString("YYYY") == ye                                                         
+                List<SalaryViewModel> salaries = await (from s in _db.Salary where s.User.Id == id && s.Year.ToString("YYYY") == ye                                                         
                                                         select new SalaryViewModel
                                                         {
-                                                            FirstName = u.FirstName,
-                                                            LastName = u.LastName,
-                                                            Email = u.Email,
-                                                            PhoneNumber = u.PhoneNumber,
-                                                            Month = u.Salary.Month,
-                                                            Year = u.Salary.Year,
-                                                            BasicSalary = u.Salary.allowanceAndDeduction.BasicSalary,
-                                                            TotalAllowances = u.Salary.TotalAllowances,
-                                                            TotalDeductions = u.Salary.TotalDeductions,
-                                                            GrossSalary = u.Salary.GrossSalary,
-                                                            NetSalary = u.Salary.NetSalary
+                                                            FirstName = user.FirstName,
+                                                            LastName = user.LastName,
+                                                            Email = user.Email,
+                                                            PhoneNumber = user.PhoneNumber,
+                                                            Month = s.Month,
+                                                            Year = s.Year,
+                                                            BasicSalary = s.allowanceAndDeduction.BasicSalary,
+                                                            TotalAllowances = s.TotalAllowances,
+                                                            TotalDeductions = s.TotalDeductions,
+                                                            GrossSalary = s.GrossSalary,
+                                                            NetSalary = s.NetSalary
                                                         }).ToListAsync();
                 return salaries;
             }

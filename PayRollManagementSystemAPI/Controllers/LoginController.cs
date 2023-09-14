@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PayRollManagementSystemAPI.Contracts;
 using PayRollManagementSystemAPI.Models;
 using PayRollManagementSystemAPI.ViewModels;
+using Newtonsoft.Json;
+using PayRollManagementSystemAPI.NewFolder;
 
 namespace PayRollManagementSystemAPI.Controllers
 {
@@ -46,13 +48,17 @@ namespace PayRollManagementSystemAPI.Controllers
             else
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                return Json(user);
+                UserViewModel user1 = new UserViewModel();
+                string obj = JsonConvert.SerializeObject(user);
+                user1 = JsonConvert.DeserializeObject<UserViewModel>(obj);
+                user1.RoleName = roles[0];
+                return Json(user1);
             }
 
         }
         [HttpPost]
         [Route("ChangePassword")]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel changePasswordViewModel)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel changePasswordViewModel)
         {
             if(changePasswordViewModel != null)
             {

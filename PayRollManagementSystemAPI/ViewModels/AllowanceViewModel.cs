@@ -5,7 +5,7 @@ namespace PayRollManagementSystemAPI.ViewModels
 {
     public class AllowanceViewModel
     {
-        public int TypeId { get; set; }
+        public int Id { get; set; }
         public string? ClassName { get; set; }
         public decimal BasicSalary { get; set; }
         public decimal HRAllowance { get; set; }

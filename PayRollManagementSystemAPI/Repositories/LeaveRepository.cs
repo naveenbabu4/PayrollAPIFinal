@@ -89,7 +89,7 @@ namespace PayRollManagementSystemAPI.Repositories
 
         public async Task<Leave> UpdateLeaveStatus(LeaveViewModel leave)
         {
-            Leave upLeave = await _db.Leave.FirstOrDefaultAsync(x => x.Id ==  leave.LeaveId );
+            Leave upLeave = await _db.Leave.FirstOrDefaultAsync(x => x.Id ==  leave.Id );
             if(upLeave != null)
             {
                 upLeave.LeaveStatus = leave.LeaveStatus;
