@@ -3394,24 +3394,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\naboyapa\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\SBAHUNAD\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\naboyapa\\Desktop\\Project\\PayRollAPI\\PayRollManagementSystemAPI\\PayRollManagementSystemAPI.csproj",
+      "projectUniqueName": "C:\\Users\\SBAHUNAD\\Desktop\\IDigital\\IDigitalPractice\\Project\\PayRollAPIFinal\\PayRollAPI\\PayRollManagementSystemAPI\\PayRollManagementSystemAPI.csproj",
       "projectName": "PayRollManagementSystemAPI",
-      "projectPath": "C:\\Users\\naboyapa\\Desktop\\Project\\PayRollAPI\\PayRollManagementSystemAPI\\PayRollManagementSystemAPI.csproj",
-      "packagesPath": "C:\\Users\\naboyapa\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\naboyapa\\Desktop\\Project\\PayRollAPI\\PayRollManagementSystemAPI\\obj\\",
+      "projectPath": "C:\\Users\\SBAHUNAD\\Desktop\\IDigital\\IDigitalPractice\\Project\\PayRollAPIFinal\\PayRollAPI\\PayRollManagementSystemAPI\\PayRollManagementSystemAPI.csproj",
+      "packagesPath": "C:\\Users\\SBAHUNAD\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\SBAHUNAD\\Desktop\\IDigital\\IDigitalPractice\\Project\\PayRollAPIFinal\\PayRollAPI\\PayRollManagementSystemAPI\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\naboyapa\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\SBAHUNAD\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

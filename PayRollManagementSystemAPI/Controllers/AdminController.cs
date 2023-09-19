@@ -42,20 +42,20 @@ namespace PayRollManagementSystemAPI.Controllers
         //Inserting Employee into the database
         [HttpPost]
         [Route("CreateEmployee")] 
-        public async Task<JsonResult> CreateEmployee([FromBody] UserViewModel employee,int id)
+        public async Task<JsonResult> CreateEmployee([FromBody] EmployeeViewModel employee,int id)
         {
             if (!await _roleManager.RoleExistsAsync("employee"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("employee"));
-                return Json(await CreateEmployeeFunc(employee,id));
+                return Json(await CreateEmployeeFunc(employee,employee.AllowanceId));
             }
             else
             {
-                return Json(await CreateEmployeeFunc(employee, id));
+                return Json(await CreateEmployeeFunc(employee, employee.AllowanceId));
             }
         }
         //Inserting Employee Function which will be triggered when CreateEmployee Called
-        private async Task<IActionResult> CreateEmployeeFunc(UserViewModel employee,int id)
+        private async Task<IActionResult> CreateEmployeeFunc(EmployeeViewModel employee,int id)
         {
             string obj = JsonConvert.SerializeObject(employee);
             AccountUser user = new AccountUser();
@@ -75,7 +75,7 @@ namespace PayRollManagementSystemAPI.Controllers
         //Inserting Admin into the database
         [HttpPost]
         [Route("CreateAdmin")]
-        public async Task<IActionResult> CreateAdmin([FromBody] AdminViewModel admin) 
+        public async Task<IActionResult> CreateAdmin([FromBody]AdminViewModel admin) 
         {
 
             if (!await _roleManager.RoleExistsAsync("admin"))
@@ -131,37 +131,38 @@ namespace PayRollManagementSystemAPI.Controllers
         [Route("GetAllPendingLeaves")]
         public async Task<IActionResult> GetAllPendingLeaves()
         {
-            List<Leave> leaves = await _leaveRepository.GetAllPendingLeaves();
+            List<DisplayLeaveModel> leaves = await _leaveRepository.GetAllPendingLeaves();
             return Json(leaves);
         }
         [HttpPost]
-        [Route("ApproveLeave")]
-        public async Task<IActionResult> ApproveLeave(LeaveViewModel leave)
+        [Route("ApproveLeave/{id}")]
+        public async Task<IActionResult> ApproveLeave(int id)
         {
-            if(leave != null)
+            if(id != null)
             {
-                leave.LeaveStatus = "approved";
-                return Json(await _leaveRepository.UpdateLeaveStatus(leave));
+                //leave.LeaveStatus = "approved";
+                return Json(await _leaveRepository.UpdateLeaveStatus(id));
             }
             return null;
         }
         [HttpPost]
-        [Route("RejectLeave")]
-        public async Task<IActionResult> RejectLeave(LeaveViewModel leave)
+        [Route("RejectLeave/{id}")]
+        public async Task<IActionResult> RejectLeave(int id)
         {
-            if (leave != null)
+            if (id != null)
             {
-                leave.LeaveStatus = "rejected";
-                return Json(await _leaveRepository.UpdateLeaveStatus(leave));
+
+                return Json(await _leaveRepository.UpdateRejectLeave(id));
             }
             return null;
         }
-        [HttpPost]
-        [Route("GenerateSalary")]
-        public async Task<IActionResult> GenerateSalary(string id,DateTime month)
+        [HttpGet]
+        [Route("GenerateSalary/{id}")]
+        public async Task<IActionResult> GenerateSalary(string id)
         {
             if(id!=null)
             {
+                DateTime month = DateTime.Now;
                 return Json(await _salaryRepository.GenerateSalary(id,month));
             }
             return BadRequest();
@@ -215,6 +216,64 @@ namespace PayRollManagementSystemAPI.Controllers
             }
             return BadRequest();
         }
-
+        [HttpGet]
+        [Route("GetAllApprovedLeaves")]
+        public async Task<IActionResult> GetAllApprovedLeaves()
+        {
+            List<DisplayLeaveModel> leaves = await _leaveRepository.GetAllApprovedLeaves();
+            return Json(leaves);
+        }
+        [HttpGet]
+        [Route("GetAllRejectedLeaves")]
+        public async Task<IActionResult> GetAllRejectedLeaves()
+        {
+            List<DisplayLeaveModel> leaves = await _leaveRepository.GetAllRejectedLeaves();
+            return Json(leaves);
+        }
+        [HttpPost]
+        [Route("UpdateEmployee")]
+        public async Task<IActionResult> UpdateEmployee([FromBody]UserViewModel employee)
+        {
+            if (employee != null) {
+                AccountUser user = await _userManager.FindByIdAsync(employee.Id);
+                if (user != null)
+                {
+                    user.FirstName = employee.FirstName;
+                    user.LastName = employee.LastName;
+                    user.Email = employee.Email;
+                    user.Address = employee.Address;
+                    user.PhoneNumber = employee.PhoneNumber;
+                    user.Position = employee.Position;
+                    user.JoiningDate = employee.JoiningDate; 
+                    user.FullName = user.FirstName+ " "+user.LastName;
+                    return Json(await _userRepository.UpdateEmployee(user));
+                }
+                return BadRequest();
+            }
+            return BadRequest();
+        }
+        [HttpPost]
+        [Route("UpdateAdmin")]
+        public async Task<IActionResult> UpdateAdmin([FromBody] UserViewModel employee)
+        {
+            if (employee != null)
+            {
+                AccountUser user = await _userManager.FindByIdAsync(employee.Id);
+                if (user != null)
+                {
+                    user.FirstName = employee.FirstName;
+                    user.LastName = employee.LastName;
+                    user.Email = employee.Email;
+                    user.Address = employee.Address;
+                    user.PhoneNumber = employee.PhoneNumber;
+                    user.Position = employee.Position;
+                    user.JoiningDate = employee.JoiningDate;
+                    user.FullName = user.FirstName + " " + user.LastName;
+                    return Json(await _userRepository.UpdateAdmin(user));
+                }
+                return BadRequest();
+            }
+            return BadRequest();
+        }
     }
 }

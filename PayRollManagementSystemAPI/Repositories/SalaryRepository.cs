@@ -109,6 +109,11 @@ namespace PayRollManagementSystemAPI.Repositories
                 viewModel.Email = user.Email;
                 viewModel.PhoneNumber = user.PhoneNumber;
                 viewModel.BasicSalary = user.Package.BasicSalary;
+                viewModel.HRAllowance = user.Package.HRAllowance;
+                viewModel.DAAllowance = user.Package.DAAllowance;
+                viewModel.WashingAllowance = user.Package.WashingAllowance;
+                viewModel.TravelAllowance = user.Package.TravelAllowance;
+                viewModel.MedicalAllowance = user.Package.MedicalAllowance;
                 viewModel.Month = month;
                 viewModel.LeaveDeduction = totalLeaves;
                 return viewModel;

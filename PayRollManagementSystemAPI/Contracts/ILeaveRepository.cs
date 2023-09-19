@@ -9,9 +9,10 @@ namespace PayRollManagementSystemAPI.Contracts
         Task<List<Leave>> GetAllLeavesById(string id);
         Task<List<Leave>> GetAllLeavesByYearById(string id,DateTime startYear,DateTime endYear);
         Task<List<Leave>> GetAllLeavesByMonthById(string id, DateTime month);
-        Task<List<Leave>> GetAllPendingLeaves();
-        Task<List<Leave>> GetAllApprovedLeaves();
-        Task<List<Leave>> GetAllRejectedLeaves();
-        Task<Leave> UpdateLeaveStatus(LeaveViewModel leave);
+        Task<List<DisplayLeaveModel>> GetAllPendingLeaves();
+        Task<List<DisplayLeaveModel>> GetAllApprovedLeaves();
+        Task<List<DisplayLeaveModel>> GetAllRejectedLeaves();
+        Task<Leave> UpdateLeaveStatus(int id);
+        Task<Leave> UpdateRejectLeave(int id);
     }
 }

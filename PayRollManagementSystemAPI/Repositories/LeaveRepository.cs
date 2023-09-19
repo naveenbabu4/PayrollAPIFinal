@@ -38,9 +38,23 @@ namespace PayRollManagementSystemAPI.Repositories
 
         }
 
-        public async Task<List<Leave>> GetAllApprovedLeaves()
+        public async Task<List<DisplayLeaveModel>> GetAllApprovedLeaves()
         {
-            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "approved").ToListAsync();
+
+            List<Leave> leaves = await _db.Leave.Include(x => x.User).Where(x => x.LeaveStatus.ToLower() == "approved").ToListAsync();
+            
+            List<DisplayLeaveModel> models = new List<DisplayLeaveModel>();
+            foreach(var leave in leaves)
+            {
+                string obj1 = JsonConvert.SerializeObject(leave);
+                DisplayLeaveModel model =  JsonConvert.DeserializeObject<DisplayLeaveModel>(obj1);
+                model.FirstName = leave.User.FirstName;
+                model.LastName = leave.User.LastName;
+                model.FullName = leave.User.FullName;
+                model.Email = leave.User.Email;
+                models.Add(model);
+            }
+            return models;
         }
 
         public async Task<List<Leave>> GetAllLeavesById(string id)
@@ -76,24 +90,60 @@ namespace PayRollManagementSystemAPI.Repositories
         }
 
 
-        public async Task<List<Leave>> GetAllPendingLeaves()
+        public async Task<List<DisplayLeaveModel>> GetAllPendingLeaves()
         {
-            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "pending").ToListAsync();
+            List<Leave> leaves = await _db.Leave.Include(x=>x.User).Where(x => x.LeaveStatus.ToLower() == "pending").ToListAsync();
+            List<DisplayLeaveModel> models = new List<DisplayLeaveModel>();
+            foreach (var leave in leaves)
+            {
+                string obj1 = JsonConvert.SerializeObject(leave);
+                DisplayLeaveModel model = JsonConvert.DeserializeObject<DisplayLeaveModel>(obj1);
+                model.FirstName = leave.User.FirstName;
+                model.LastName = leave.User.LastName;
+                model.FullName = leave.User.FullName;
+                model.Email = leave.User.Email;
+                models.Add(model);
+            }
+            return models;
 
         }
-        public async Task<List<Leave>> GetAllRejectedLeaves()
+        public async Task<List<DisplayLeaveModel>> GetAllRejectedLeaves()
         {
-            return await _db.Leave.Where(x => x.LeaveStatus.ToLower() == "rejected").ToListAsync();
+            List<Leave> leaves =  await _db.Leave.Include(x => x.User).Where(x => x.LeaveStatus.ToLower() == "rejected").ToListAsync();
+            List<DisplayLeaveModel> models = new List<DisplayLeaveModel>();
+            foreach (var leave in leaves)
+            {
+                string obj1 = JsonConvert.SerializeObject(leave);
+                DisplayLeaveModel model = JsonConvert.DeserializeObject<DisplayLeaveModel>(obj1);
+                model.FirstName = leave.User.FirstName;
+                model.LastName = leave.User.LastName;
+                model.FullName = leave.User.FullName;
+                model.Email = leave.User.Email;
+                models.Add(model);
+            }
+            return models;
 
         }
 
-        public async Task<Leave> UpdateLeaveStatus(LeaveViewModel leave)
+        public async Task<Leave> UpdateLeaveStatus(int id)
         {
-            Leave upLeave = await _db.Leave.FirstOrDefaultAsync(x => x.Id ==  leave.Id );
+            Leave upLeave = await _db.Leave.FirstOrDefaultAsync(x => x.Id ==  id );
             if(upLeave != null)
             {
-                upLeave.LeaveStatus = leave.LeaveStatus;
-                upLeave.Comments = leave.Comments;
+                upLeave.LeaveStatus = "approved";
+                _db.Leave.Update(upLeave);
+                await _db.SaveChangesAsync();
+                return upLeave;
+            }
+            return null;
+        }
+        public async Task<Leave> UpdateRejectLeave(int id)
+        {
+            Leave upLeave = await _db.Leave.FirstOrDefaultAsync(x => x.Id == id);
+            if (upLeave != null)
+            {
+                upLeave.LeaveStatus = "rejected";
+                upLeave.Comments = "rejected";
                 _db.Leave.Update(upLeave);
                 await _db.SaveChangesAsync();
                 return upLeave;
