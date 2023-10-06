@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["PayRollManagementSystemAPI/PayRollManagementSystemAPI.csproj", "PayRollManagementSystemAPI/"]
+COPY ["PayRollManagementSystemAPI.csproj", "PayRollManagementSystemAPI/"]
 RUN dotnet restore "PayRollManagementSystemAPI/PayRollManagementSystemAPI.csproj"
 COPY . .
 WORKDIR "/src/PayRollManagementSystemAPI"
