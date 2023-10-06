@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "RE8oAPwzWxjw4nbKnDbtUZwzwes3QOtJor2Hkh7zdX4=",
+  "Source": "PayRollManagementSystemAPI",
+  "BasePath": "_content/PayRollManagementSystemAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

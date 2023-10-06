@@ -1,22 +1,16 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
-COPY ["PayRollManagementSystemAPI.csproj", "PayRollManagementSystemAPI/"]
-RUN dotnet restore "PayRollManagementSystemAPI/PayRollManagementSystemAPI.csproj"
 COPY . .
-WORKDIR "/src/PayRollManagementSystemAPI"
-RUN dotnet build "PayRollManagementSystemAPI.csproj" -c Release -o /app/build
+RUN dotnet restore "PayRollManagementSystemAPI.csproj" --disable-parallel
+RUN dotnet publish "PayRollManagementSystemAPI.csproj" -c release -o /app --no-restore
 
-FROM build AS publish
-RUN dotnet publish "PayRollManagementSystemAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PayRollManagementSystemAPI.dll"]
+COPY --from=build /app ./
+
+EXPOSE 5000
+
+ENTRYPOINT ["dotnet","PayRollManagementSystemAPI.dll"]
+
+
