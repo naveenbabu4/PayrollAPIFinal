@@ -11,7 +11,7 @@ using PayRollManagementSystemAPI.ViewModels;
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("AdminController/")]
-    [EnableCors("CorsPolicy")]
+    [EnableCors]
     public class AdminController : Controller
     {
         private readonly IUserRepository _userRepository;

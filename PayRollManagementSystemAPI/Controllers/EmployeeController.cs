@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Cors;
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("EmployeeController/")]
-    [EnableCors("CorsPolicy")]
+    [EnableCors]
     public class EmployeeController : Controller
     {
         private readonly ILeaveRepository _leaveRepository;
