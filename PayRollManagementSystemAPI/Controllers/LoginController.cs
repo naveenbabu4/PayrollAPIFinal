@@ -5,10 +5,12 @@ using PayRollManagementSystemAPI.Models;
 using PayRollManagementSystemAPI.ViewModels;
 using Newtonsoft.Json;
 using PayRollManagementSystemAPI.NewFolder;
+using Microsoft.AspNetCore.Cors;
 
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("LoginController/")]
+    [EnableCors("CorsPolicy")]
     public class LoginController : Controller
     {
         private readonly UserManager<AccountUser> _userManager;

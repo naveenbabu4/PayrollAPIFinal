@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PayRollManagementSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors("CorsPolicy")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

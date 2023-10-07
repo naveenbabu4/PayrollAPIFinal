@@ -4,10 +4,12 @@ using PayRollManagementSystemAPI.ViewModels;
 using Newtonsoft.Json;
 using PayRollManagementSystemAPI.Models;
 using PayRollManagementSystemAPI.NewFolder;
+using Microsoft.AspNetCore.Cors;
 
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("EmployeeController/")]
+    [EnableCors("CorsPolicy")]
     public class EmployeeController : Controller
     {
         private readonly ILeaveRepository _leaveRepository;

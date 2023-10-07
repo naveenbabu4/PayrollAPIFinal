@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using PayRollManagementSystemAPI.ViewModels;
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("AdminController/")]
+    [EnableCors("CorsPolicy")]
     public class AdminController : Controller
     {
         private readonly IUserRepository _userRepository;
