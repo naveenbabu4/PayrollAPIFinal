@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
         builder => builder
-            .WithOrigins("*")
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
             );
@@ -42,7 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(policyName: "CorsPolicy");
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
