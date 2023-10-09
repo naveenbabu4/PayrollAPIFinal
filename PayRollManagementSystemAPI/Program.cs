@@ -40,9 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseRouting();
-
+app.UseHttpsRedirection();
+app.UseRouting()
 app.UseCors(policyName: "CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();

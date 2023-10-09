@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Cors;
 namespace PayRollManagementSystemAPI.Controllers
 {
     [Route("LoginController/")]
-    [EnableCors]
+
     public class LoginController : Controller
     {
         private readonly UserManager<AccountUser> _userManager;
