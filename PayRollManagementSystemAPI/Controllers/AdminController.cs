@@ -39,7 +39,7 @@ namespace PayRollManagementSystemAPI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return Json("Working");
+            return Json("Working after changes added");
         }
         //Inserting Employee into the database
         [HttpPost]
