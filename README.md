@@ -34,7 +34,7 @@ For FrontEnd please refer this repository:
 Clone the project
 
 ```bash
-  https://github.com/naveenbabu4/PayrollAPIFinal.git
+  git clone https://github.com/naveenbabu4/PayrollAPIFinal.git
 ```
 
 Go to the project directory
